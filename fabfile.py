@@ -14,6 +14,7 @@ def provision():
             deps.append(line.strip())
     run("sudo apt-get update")
     run("sudo apt-get install {} --assume-yes".format(" ".join(deps)))
+    run("sudo pip install -U pip")
 
 def configure():
     put("caudexer.nginx.conf", "/tmp/caudexer.nginx.conf")
@@ -23,9 +24,9 @@ def configure():
     run("sudo service nginx restart")
 
 def deploy():
-    #run("rm -rf deployed")
-    #run("git clone {}".format(REPO_TO_CLONE))
+    # run("rm -rf deployed")
+    # run("git clone {}".format(REPO_TO_CLONE))
     run("virtualenv deployed --python=$(which python3)")
     run("cd caudexer; git pull")
-    run("deployed/bin/pip install -r caudexer/caudexer/requirements.txt")
+    run("deployed/bin/pip install -r dexer/requirements.txt")
     run("sudo service gunicorn restart")
