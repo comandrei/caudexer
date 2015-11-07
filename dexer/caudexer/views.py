@@ -2,7 +2,9 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from django.shortcuts import get_object_or_404
 
+from .models import CaudexerBook
 from .search import search_all
 from .algorithm import algorithm
 
@@ -33,13 +35,12 @@ def search(request):
     sorted_books_with_rank = algorithm(unsorted_books)
 
     data = []
-    for book, gb, gr, amz in sorted_books_with_rank:
+    for book, gb, gr, amz, rank in sorted_books_with_rank:
         snippet = gb.snippet if gb else ""
         img = ((gb.img if gb else None) or
                (gr.img if gr else None) or
                (amz.small_image_url if amz else None))
         lang = gb.language if gb else None
-        rank = 1
         pub_year = ((gr.pub_year if gr else None) or
                     (gb.publish_year if gb else None) or
                     (amz.publication_date.year if amz else None))
@@ -59,3 +60,20 @@ def search(request):
     return JSONResponse(data)
 
 
+@csrf_exempt
+def detail(request):
+    if request.method != 'GET':
+        return JSONResponse("Should be GET.")
+    id = request.GET.get("id", "")
+    if not id:
+        return JSONResponse("Must provide 'id'")
+
+    book = get_object_or_404(CaudexerBook, id=id)
+    data = {
+        "isbn_13": book.isbn_13,
+        "title": book.title,
+        "authors": (book.authors or '').split(','),
+        "categories": (book.categories or '').split(','),
+    }
+
+    return JSONResponse(data)
