@@ -73,6 +73,13 @@ class GoogleBooksData(models.Model):
     categories = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
+    @classmethod
+    def from_data(cls, **data):
+        results = GoogleBooksData.objects.all().filter(**data).order_by("-timestamp")
+        if results:
+            return results[0]
+        return GoogleBooksData(**data)
+
 
 class GoodReadsData(models.Model):
     caudexer_book = models.ForeignKey(CaudexerBook)
@@ -90,3 +97,10 @@ class GoodReadsData(models.Model):
     author_id = models.IntegerField()
     small_img = models.CharField(null=True, blank=True, max_length=300)
     img = models.CharField(null=True, blank=True, max_length=300)
+
+    @classmethod
+    def from_data(cls, **data):
+        results = GoodReadsData.objects.all().filter(**data).order_by("-timestamp")
+        if results:
+            return results[0]
+        return GoodReadsData(**data)

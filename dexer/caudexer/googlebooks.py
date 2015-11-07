@@ -21,43 +21,23 @@ def search(title):
     items = results['items']
     books = []
     for item in items:
-        gb_id = item['id']
-        snippet = item.get('searchInfo', {}).get('textSnippet', None)
-        # if not snippet:
-        #     print("no snippet")
+        book_data = {}
+        book_data["google_book_id"] = item['id']
+        book_data["snippet"] = item.get('searchInfo', {}).get('textSnippet', None)
         info = item['volumeInfo']
-        authors = info.get('authors', [])
-        categories = info.get('categories', [])
-        # if not categories:
-        #     print("no categories")
-        description = info.get('description', None)
-        # if not description:
-        #     print("no desc")
-        small_img = info['imageLinks']['smallThumbnail']
-        img = info['imageLinks']['thumbnail']
-        isbn_13 = get_isbn13(info.get('industryIdentifiers', None))
-        average_rating = info.get("averageRating", None)
-        nr_reviews = info.get("ratingsCount", None)
-        language = info.get("language", "")
-        title = info['title']
-        page_count = info.get("pageCount", None)
-        publish_year = info.get("publishDate", None)
-        book = GoogleBooksData(
-            google_book_id=gb_id,
-            snippet=snippet,
-            title=title,
-            authors=', '.join(authors),
-            small_img=small_img,
-            img=img,
-            isbn_13=isbn_13,
-            average_rating=average_rating,
-            nr_reviews=nr_reviews,
-            language=language,
-            page_count=page_count,
-            publish_year=publish_year,
-            categories=','.join(categories),
-            description=description
-        )
+        book_data["authors"] = ', '.join(info.get('authors', []))
+        book_data["categories"] = ', '.join(info.get('categories', []))
+        book_data["description"] = info.get('description', None)
+        book_data["small_img"] = info['imageLinks']['smallThumbnail']
+        book_data["img"] = info['imageLinks']['thumbnail']
+        book_data["isbn_13"] = get_isbn13(info.get('industryIdentifiers', None))
+        book_data["average_rating"] = info.get("averageRating", None)
+        book_data["nr_reviews"] = info.get("ratingsCount", None)
+        book_data["language"] = info.get("language", "")
+        book_data["title"] = info['title']
+        book_data["page_count"] = info.get("pageCount", None)
+        book_data["publish_year"] = info.get("publishDate", None)
+        book = GoogleBooksData.from_data(**book_data)
 
         books.append(book)
     return books

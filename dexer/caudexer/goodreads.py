@@ -47,35 +47,23 @@ def _debug_print(node, padding=""):
 
 
 def make_book(node):
-    gr_id = _get_child_val(node, "id")
-    nr_reviews = _get_child_val(node, "ratings_count")
-    nr_text_reviews = _get_child_val(node, "text_ratings_count")
-    pub_year = _get_child_val(node, "original_publication_year")
-    pub_month = _get_child_val(node, "original_publication_month")
-    pub_day = _get_child_val(node, "original_publication_day")
-    average_rating = _get_child_val(node, "average_rating")
+    book_data = {}
+    book_data["good_reads_id"] = _get_child_val(node, "id")
+    book_data["nr_reviews"] = _get_child_val(node, "ratings_count")
+    book_data["nr_text_reviews"] = _get_child_val(node, "text_ratings_count")
+    book_data["pub_year"] = _get_child_val(node, "original_publication_year")
+    book_data["pub_month"] = _get_child_val(node, "original_publication_month")
+    book_data["pub_day"] = _get_child_val(node, "original_publication_day")
+    book_data["average_rating"] = _get_child_val(node, "average_rating")
     book_info = _get_child(node, "best_book")
-    title = _get_child_val(book_info, "title")
+    book_data["title"] = _get_child_val(book_info, "title")
     author_data = _get_child(book_info, "author")
-    authors = _get_child_val(author_data, "name")
-    author_id = _get_child_val(author_data, "id")
-    img = _get_child_val(book_info, "image_url")
-    small_img = _get_child_val(book_info, "small_image_url")
+    book_data["authors"] = _get_child_val(author_data, "name")
+    book_data["author_id"] = _get_child_val(author_data, "id")
+    book_data["img"] = _get_child_val(book_info, "image_url")
+    book_data["small_img"] = _get_child_val(book_info, "small_image_url")
 
-    book = GoodReadsData(
-        good_reads_id=gr_id,
-        nr_reviews=nr_reviews,
-        nr_text_reviews=nr_text_reviews,
-        pub_year=pub_year,
-        pub_month=pub_month,
-        pub_day=pub_day,
-        average_rating=average_rating,
-        title=title,
-        authors=authors,
-        author_id=author_id,
-        img=img,
-        small_img=small_img
-    )
+    book = GoodReadsData.from_data(**book_data)
     return book
 
 
