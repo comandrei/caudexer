@@ -3,21 +3,21 @@ import requests
 from time import sleep
 import xml.etree.ElementTree as ET
 from .models import GoodReadsData
+from dexer.settings import GOODREADS_KEYS
+import random
 
 # GoodReadsBook = namedtuple("GoodReadsBook", [
 #     "gr_id", "nr_reviews", "nr_text_reviews", "pub_year", "pub_month", "pub_day",
 #     "average_rating", "title", "authors", "author_id", "img", "small_img"
 # ])
 
-KEY = "L77pC6x4rKF5QRY6vy8A7g"
-SECRET = "IMS3nkQeQ4tbv2rL9ZsrxfwbdJsbGCYXFbmzOJnP0"
 
 SEARCH_URL = "https://www.goodreads.com/search/index.xml"
 
 
 def search(title):
     sleep(1) # api requires us to be nice
-    response = requests.get(SEARCH_URL, data={"key": KEY, "q": title})
+    response = requests.get(SEARCH_URL, data={"key": _get_key(), "q": title})
     if response.status_code != 200:
         print(response.status_code, response.content)
         return []
@@ -35,6 +35,9 @@ def search(title):
 
     return books
 
+
+def _get_key():
+    return random.choice(GOODREADS_KEYS)
 
 def _debug_print(node, padding=""):
     print(padding, node.tag, node.text, node.attrib)
