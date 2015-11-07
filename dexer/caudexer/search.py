@@ -73,13 +73,9 @@ def serialize_authors(authors):
 def matches_authors(res_authors, authors):
     if not res_authors or not authors:
         return True
-    author1 = ' '.join(res_authors[0].split())
-    author2 = ' '.join(authors[0].split())
-    if author1 == author2:
-        return True
-    else:
-        print("authors do not match {} {}".format(author1, author2))
-        return False
+    author1 = ' '.join(res_authors.split())
+    author2 = ' '.join(authors.split())
+    return author1 == author2
 
 
 def find_book_or_create(results, title=None, isbn_13=None, authors=None):
