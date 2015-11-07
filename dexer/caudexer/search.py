@@ -12,7 +12,7 @@ def search_all(title):
     print("Goodreads has {} results".format(len(gr_results)))
     gb_results = gb.search(title)
     print("Google books has {} results".format(len(gb_results)))
-    amz_results = list(amz.search(Keywords=title))
+    amz_results = amz.search(title)
     print("Amazon books has {} results".format(len(amz_results)))
 
     books = {}
@@ -36,13 +36,14 @@ def search_all(title):
 
     for res in amz_results:
         authors = serialize_authors(res.authors)
-        book = find_book_or_create(res.isbn_13, res.title, authors)
         book_options = dict(title=res.title,
                             authors=authors, isbn_13=res.isbn_13)
+        book = find_book_or_create(books, **book_options)
         update_data_if_unavailable(book, **book_options)
         res.caudexer_book = book
         res.save()
-        books.append(book)
+        books[book] = [res, None]
+        print(book, book.title)
 
 
     print("Books: {}".format(len(books)))
@@ -81,6 +82,9 @@ def matches_authors(res_authors, authors):
 
 
 def find_book_or_create(results, title=None, isbn_13=None, authors=None):
+    """
+    :returns CaudexerBook()
+    """
     for book in results:
         if book_matches(book, title, authors, isbn_13):
             return book

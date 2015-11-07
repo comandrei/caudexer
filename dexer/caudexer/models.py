@@ -16,9 +16,9 @@ class AmazonBook(models.Model):
     price_and_currency = models.CharField(max_length=100)
     asin = models.CharField(max_length=100)
     sales_rank = models.IntegerField(null=True, blank=True)
-    offer_url = models.URLField(max_length=200)
-    authors = models.CharField(max_length=200)
-    publisher = models.CharField(max_length=200)
+    offer_url = models.URLField(null=True, max_length=200, blank=True)
+    authors = models.CharField(null=True, max_length=200, blank=True)
+    publisher = models.CharField(null=True, max_length=200, blank=True)
     isbn_13 = models.CharField(null=True, blank=True, max_length=300)
     eisbn = models.CharField(null=True, blank=True, max_length=300)
     binding = models.CharField(null=True, blank=True, max_length=300)
@@ -29,7 +29,7 @@ class AmazonBook(models.Model):
     pages = models.IntegerField(null=True, blank=True)
 
     @classmethod
-    def from_product_api(cls, product):
+    def from_product(cls, product):
         return cls(
             price_and_currency=u'{} {}'.format(*product.price_and_currency),
             asin=product.asin,
@@ -37,7 +37,7 @@ class AmazonBook(models.Model):
             offer_url=product.offer_url,
             authors=', '.join(product.authors),
             publisher=product.publisher,
-            isbn_13=('978' if len(product.isbn) == 10 else '') + product.isbn,
+            isbn_13=('978' if len(product.isbn or '') == 10 else '') + (product.isbn or ''),
             eisbn=product.isbn,
             binding=product.binding,
             languages=', '.join(product.languages),

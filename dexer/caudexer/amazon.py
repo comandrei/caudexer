@@ -14,8 +14,11 @@ def file_credentials(path="~/.caudexer.aws.json"):
 
 
 def search(keywords):
-    for result in search_books(Keywords=keywords):
-        yield models.AmazonBook.from_product_api(result)
+    """
+    :returns: *AmazonBook* models that match keywords
+    """
+    return [models.AmazonBook.from_product(result)
+            for result in search_books(Keywords=keywords)]
 
 
 def search_books(get_credentials=file_credentials, **options):
