@@ -54,7 +54,7 @@ def make_book(node):
     book_info = _get_child(node, "best_book")
     title = _get_child_val(book_info, "title")
     author_data = _get_child(book_info, "author")
-    authors = [_get_child_val(author_data, "name")] # why only one author ?
+    authors = _get_child_val(author_data, "name")
     author_id = _get_child_val(author_data, "id")
     img = _get_child_val(book_info, "image_url")
     small_img = _get_child_val(book_info, "small_image_url")

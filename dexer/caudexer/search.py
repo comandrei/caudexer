@@ -12,30 +12,24 @@ def search_all(title):
     gb_results = gb.search(title)
     print("Google books has {} results".format(len(gb_results)))
 
-    books = []
+    books = {}
 
     for res in gb_results:
-        authors = serialize_authors(res.authors)
-
-        book = find_book_or_create(res.isbn_13, res.title, authors)
-        update_data_if_unavailable(book, title=res.title, authors=authors, isbn_13=res.isbn_13)
+        book = find_book_or_create(res.isbn_13, res.title, res.authors)
+        update_data_if_unavailable(book, title=res.title, authors=res.authors, isbn_13=res.isbn_13)
         res.caudexer_book = book
         res.save()
-        books.append(book)
+        books[book] = [res, None]
 
     for res in gr_results:
         # gr no isbn :(
-        authors = serialize_authors(res.authors)
-        book = find_book_or_create(title=res.title, authors=authors)
+        book = find_book_or_create(title=res.title, authors=res.authors)
         res.caudexer_book = book
-        update_data_if_unavailable(book, title=res.title, authors=authors)
+        update_data_if_unavailable(book, title=res.title, authors=res.authors)
         res.save()
-        if book not in books:
-            books.append(book)
+        book_data = books.setdefault(book, [None, None])
+        book_data[1] = res
 
-    print("Books: {}".format(len(books)))
-    # for b in books:
-    #       print(b.title, b.authors, b.isbn_13, b.gb != None, b.gr != None)
     return books
 
 
@@ -53,7 +47,7 @@ def serialize_authors(authors):
     if not authors:
         return ""
     return ', '.join([
-        ' '.join(author.split()) for author in authors
+        ' '.join(author.split(" ")) for author in authors
     ])
 
 
