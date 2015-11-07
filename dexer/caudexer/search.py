@@ -18,28 +18,35 @@ def search_all(title):
     books = {}
 
     for res in gb_results:
-        book = find_book_or_create(books, isbn_13=res.isbn_13, title=res.title, authors=res.authors)
-        update_data_if_unavailable(book, title=res.title, authors=res.authors, isbn_13=res.isbn_13)
-        res.caudexer_book = book
-        res.save()
+        if res.id:
+            book = res.caudexer_book
+        else:
+            book = find_book_or_create(
+                books, isbn_13=res.isbn_13, title=res.title, authors=res.authors,
+                categories=res.categories
+            )
+            res.caudexer_book = book
+            res.save()
         books[book] = [res, None, None]
         print(book, book.title)
 
     for res in gr_results:
         # gr no isbn :(
-        book = find_book_or_create(books, title=res.title, authors=res.authors)
-        res.caudexer_book = book
-        update_data_if_unavailable(book, title=res.title, authors=res.authors)
-        res.save()
+        if res.id:
+            book = res.caudexer_book
+        else:
+            book = find_book_or_create(books, title=res.title, authors=res.authors)
+            res.caudexer_book = book
+            res.save()
         book_data = books.setdefault(book, [None, None, None])
         book_data[1] = res
+        print(book, book.title)
 
     for res in amz_results:
         authors = serialize_authors(res.authors)
         book_options = dict(title=res.title,
                             authors=authors, isbn_13=res.isbn_13)
         book = find_book_or_create(books, **book_options)
-        update_data_if_unavailable(book, **book_options)
         res.caudexer_book = book
         res.save()
         book_data = books.setdefault(book, [None, None, None])
@@ -73,27 +80,40 @@ def serialize_authors(authors):
 def matches_authors(res_authors, authors):
     if not res_authors or not authors:
         return True
-    author1 = ' '.join(res_authors[0].split())
-    author2 = ' '.join(authors[0].split())
-    if author1 == author2:
-        return True
-    else:
-        print("authors do not match {} {}".format(author1, author2))
-        return False
+    author1 = ' '.join(res_authors.split())
+    author2 = ' '.join(authors.split())
+    return author1 == author2
 
 
-def find_book_or_create(results, title=None, isbn_13=None, authors=None):
+def find_book_or_create(results, title=None, isbn_13=None, authors=None, categories=None):
     """
     :returns CaudexerBook()
     """
-    for book in results:
-        if book_matches(book, title, authors, isbn_13):
-            return book
+    book = None
+    for item in results:
+        if book_matches(item, title, authors, isbn_13):
+            book = item
+
     if isbn_13:
-        qs = CaudexerBook.objects.filter(isbn_13=isbn_13)
-        if qs:
-            return qs[0]
-    return CaudexerBook.objects.get_or_create(title=title, authors=authors)[0]
+        try:
+            book = CaudexerBook.objects.get(isbn_13=isbn_13)
+        except CaudexerBook.DoesNotExist:
+            book = None
+
+    if not book:
+        try:
+            book = CaudexerBook.objects.get(title=title, authors=authors)
+        except CaudexerBook.DoesNotExist:
+            book = None
+
+    if not book:
+        book = CaudexerBook()
+
+    update_data_if_unavailable(
+        book, title=title, isbn_13=isbn_13, authors=authors, categories=categories
+    )
+
+    return book
 
 
 def update_data_if_unavailable(book, title=None, isbn_13=None, authors=None, categories=None):

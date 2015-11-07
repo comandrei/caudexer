@@ -48,7 +48,7 @@ def search(request):
             "id": book.id,
             "title": book.title,
             "description": snippet,
-            "authors": book.authors.split(','),
+            "authors": (book.authors or '').split(','),
             "isbn": book.isbn_13,
             "thumbnail": img,
             "language": lang,

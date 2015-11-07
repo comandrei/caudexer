@@ -97,6 +97,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+GOODREADS_KEYS = [
+    # This is the "default" one, but you should override this in settings_ops and add more.
+    ("L77pC6x4rKF5QRY6vy8A7g", "IMS3nkQeQ4tbv2rL9ZsrxfwbdJsbGCYXFbmzOJnP0")
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
