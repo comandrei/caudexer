@@ -36,11 +36,14 @@ def search(request):
     for book, gb, gr, amz in sorted_books_with_rank:
         snippet = gb.snippet if gb else ""
         img = ((gb.img if gb else None) or
-               (gr.img if gr else None))
+               (gr.img if gr else None) or
+               (amz.small_image_url if amz else None))
         lang = gb.language if gb else None
         rank = 1
         pub_year = ((gr.pub_year if gr else None) or
-                    (gb.publish_year if gb else None))
+                    (gb.publish_year if gb else None) or
+                    (amz.publication_date.year if amz else None))
+
         result = {
             "id": book.id,
             "title": book.title,

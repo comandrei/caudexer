@@ -27,6 +27,9 @@ class AmazonBook(models.Model):
     title = models.CharField(null=True, blank=True, max_length=300)
     publication_date = models.DateField()
     pages = models.IntegerField(null=True, blank=True)
+    large_image_url = models.URLField(null=True, max_length=200, blank=True)
+    medium_image_url = models.URLField(null=True, max_length=200, blank=True)
+    small_image_url = models.URLField(null=True, max_length=200, blank=True)
 
     @classmethod
     def from_product(cls, product):
@@ -45,6 +48,9 @@ class AmazonBook(models.Model):
             title=product.title,
             publication_date=product.publication_date,
             pages=int(product.pages or 0),
+            large_image_url=product.large_image_url,
+            medium_image_url=product.medium_image_url,
+            small_image_url=product.small_image_url,
         )
 
 
