@@ -67,7 +67,7 @@ INSTALLED_APPS += ("gunicorn", )
 INSTALLED_APPS += (
     'storages',
 )
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 # AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
 # AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
@@ -85,7 +85,7 @@ AWS_EXPIRY = 60 * 60 * 24 * 7
 # AWS_HEADERS = {
 #     'Cache-Control': six.b('max-age=%d, s-maxage=%d, must-revalidate' % (
 #         AWS_EXPIRY, AWS_EXPIRY))
-}
+#}
 
 # URL that handles the media served from MEDIA_ROOT, used for managing
 # stored files.
@@ -94,8 +94,8 @@ AWS_EXPIRY = 60 * 60 * 24 * 7
 # Static Assets
 # ------------------------
 
-STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
-STATIC_URL = MEDIA_URL
+#STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+#STATIC_URL = MEDIA_URL
 
 # See: https://github.com/antonagestam/collectfast
 # For Django 1.7+, 'collectfast' should come before
