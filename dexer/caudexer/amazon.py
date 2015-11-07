@@ -25,8 +25,12 @@ def search_books(get_credentials=file_credentials, **options):
     """
     Yields book products that match search options
     """
-    creds = get_credentials()
-    api = amazon.api.AmazonAPI(**creds)
+    try:
+        creds = get_credentials()
+        api = amazon.api.AmazonAPI(**creds)
+    except Exception as exc:
+        print(exc)
+        return []
     options.setdefault('SearchIndex', 'Books')
     results = api.search(**options)
     for index, result_item in enumerate(results):
