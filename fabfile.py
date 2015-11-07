@@ -26,6 +26,7 @@ def configure():
 def deploy():
     run("cd caudexer; git pull")
     run("deployed/bin/pip install -r caudexer/dexer/requirements.txt")
+    run("deployed/bin/python caudexer/dexer/manage.py migrate")
     run("sudo service gunicorn restart")
 
 def first_deploy():
