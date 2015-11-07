@@ -22,7 +22,7 @@ def search_all(title):
         update_data_if_unavailable(book, title=res.title, authors=res.authors, isbn_13=res.isbn_13)
         res.caudexer_book = book
         res.save()
-        books[book] = [res, None]
+        books[book] = [res, None, None]
         print(book, book.title)
 
     for res in gr_results:
@@ -31,7 +31,7 @@ def search_all(title):
         res.caudexer_book = book
         update_data_if_unavailable(book, title=res.title, authors=res.authors)
         res.save()
-        book_data = books.setdefault(book, [None, None])
+        book_data = books.setdefault(book, [None, None, None])
         book_data[1] = res
 
     for res in amz_results:
@@ -42,7 +42,8 @@ def search_all(title):
         update_data_if_unavailable(book, **book_options)
         res.caudexer_book = book
         res.save()
-        books[book] = [res, None]
+        book_data = books.setdefault(book, [None, None, None])
+        book_data[2] = res
         print(book, book.title)
 
 

@@ -27,18 +27,20 @@ def search(request):
     books = search_all(title)
     unsorted_books = []
     for book, data in books.items():
-        gb, gr = data
-        unsorted_books.append([book, gb, gr])
+        gb, gr, amz = data
+        unsorted_books.append([book, gb, gr, amz])
 
     sorted_books_with_rank = algorithm(unsorted_books)
 
     data = []
-    for book, gb, gr in sorted_books_with_rank:
+    for book, gb, gr, amz in sorted_books_with_rank:
         snippet = gb.snippet if gb else ""
-        img = (gb.img if gb else None) or (gr.img if gr else None)
+        img = ((gb.img if gb else None) or
+               (gr.img if gr else None))
         lang = gb.language if gb else None
         rank = 1
-        pub_year = (gr.pub_year if gr else None) or (gb.publish_year if gb else None)
+        pub_year = ((gr.pub_year if gr else None) or
+                    (gb.publish_year if gb else None))
         result = {
             "id": book.id,
             "title": book.title,
