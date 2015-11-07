@@ -1,5 +1,6 @@
 from . import googlebooks as gb
 from . import goodreads as gr
+from . import amazon as amz
 from .models import CaudexerBook
 # from collections import namedtuple
 
@@ -11,6 +12,8 @@ def search_all(title):
     print("Goodreads has {} results".format(len(gr_results)))
     gb_results = gb.search(title)
     print("Google books has {} results".format(len(gb_results)))
+    amz_results = amz.search(title)
+    print("Amazon books has {} results".format(len(amz_results)))
 
     books = {}
 
@@ -19,7 +22,7 @@ def search_all(title):
         update_data_if_unavailable(book, title=res.title, authors=res.authors, isbn_13=res.isbn_13)
         res.caudexer_book = book
         res.save()
-        books[book] = [res, None]
+        books[book] = [res, None, None]
         print(book, book.title)
 
     for res in gr_results:
@@ -28,9 +31,25 @@ def search_all(title):
         res.caudexer_book = book
         update_data_if_unavailable(book, title=res.title, authors=res.authors)
         res.save()
-        book_data = books.setdefault(book, [None, None])
+        book_data = books.setdefault(book, [None, None, None])
         book_data[1] = res
 
+    for res in amz_results:
+        authors = serialize_authors(res.authors)
+        book_options = dict(title=res.title,
+                            authors=authors, isbn_13=res.isbn_13)
+        book = find_book_or_create(books, **book_options)
+        update_data_if_unavailable(book, **book_options)
+        res.caudexer_book = book
+        res.save()
+        book_data = books.setdefault(book, [None, None, None])
+        book_data[2] = res
+        print(book, book.title)
+
+
+    print("Books: {}".format(len(books)))
+    # for b in books:
+    #       print(b.title, b.authors, b.isbn_13, b.gb != None, b.gr != None)
     return books
 
 
@@ -64,6 +83,9 @@ def matches_authors(res_authors, authors):
 
 
 def find_book_or_create(results, title=None, isbn_13=None, authors=None):
+    """
+    :returns CaudexerBook()
+    """
     for book in results:
         if book_matches(book, title, authors, isbn_13):
             return book
