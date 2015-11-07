@@ -1,12 +1,13 @@
 import requests
-from collections import namedtuple
+# from collections import namedtuple
 from time import sleep
 import xml.etree.ElementTree as ET
+from .models import GoodReadsData
 
-GoodReadsBook = namedtuple("GoodReadsBook", [
-    "gr_id", "nr_reviews", "nr_text_reviews", "pub_year", "pub_month", "pub_day",
-    "average_rating", "title", "authors", "author_id", "img", "small_img"
-])
+# GoodReadsBook = namedtuple("GoodReadsBook", [
+#     "gr_id", "nr_reviews", "nr_text_reviews", "pub_year", "pub_month", "pub_day",
+#     "average_rating", "title", "authors", "author_id", "img", "small_img"
+# ])
 
 KEY = "L77pC6x4rKF5QRY6vy8A7g"
 SECRET = "IMS3nkQeQ4tbv2rL9ZsrxfwbdJsbGCYXFbmzOJnP0"
@@ -27,7 +28,7 @@ def search(title):
     results_tag = _get_child(search_tag, "results")
 
     books = []
-    for index, result in enumerate(results_tag.getchildren()):
+    for result in results_tag.getchildren():
         # print "\n\n\n\nResult", index
         # _debug_print(result)
         books.append(make_book(result))
@@ -58,8 +59,8 @@ def make_book(node):
     img = _get_child_val(book_info, "image_url")
     small_img = _get_child_val(book_info, "small_image_url")
 
-    book = GoodReadsBook(
-        gr_id=gr_id,
+    book = GoodReadsData(
+        good_reads_id=gr_id,
         nr_reviews=nr_reviews,
         nr_text_reviews=nr_text_reviews,
         pub_year=pub_year,
