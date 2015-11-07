@@ -100,3 +100,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+import sys
+_user_home = os.path.expanduser('~')
+_settings = os.path.join(_user_home, 'etc', 'dexer')
+sys.path.insert(0, _settings)
+try:
+    from settings_ops import *  # noqa
+except ImportError:
+    pass
