@@ -1,13 +1,10 @@
 import json
 import os
 
-from django.db import models
-
 import amazon.api
 
 
-class AmazonBook(models.Model):
-    pass
+from . import models
 
 
 def file_credentials(path="~/.caudexer.aws.json"):
@@ -17,10 +14,13 @@ def file_credentials(path="~/.caudexer.aws.json"):
 
 
 def search(get_credentials=file_credentials, **options):
+    """
+    Yields book models that match search options
+    """
     creds = get_credentials()
     api = amazon.api.AmazonAPI(**creds)
     options.setdefault('SearchIndex', 'Books')
     results = api.search(**options)
     for index, result_item in enumerate(results):
-        yield result_item
+        yield models.AmazonBook.from_product_api(result_item)
 

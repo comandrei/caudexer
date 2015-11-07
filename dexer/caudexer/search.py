@@ -1,5 +1,6 @@
 from . import googlebooks as gb
 from . import goodreads as gr
+from . import amazon as amz
 from .models import CaudexerBook
 # from collections import namedtuple
 
@@ -11,6 +12,8 @@ def search_all(title):
     print("Goodreads has {} results".format(len(gr_results)))
     gb_results = gb.search(title)
     print("Google books has {} results".format(len(gb_results)))
+    amz_results = list(amz.search(Keywords=title))
+    print("Amazon books has {} results".format(len(amz_results)))
 
     books = {}
 
@@ -31,6 +34,20 @@ def search_all(title):
         book_data = books.setdefault(book, [None, None])
         book_data[1] = res
 
+    for res in amz_results:
+        authors = serialize_authors(res.authors)
+        book = find_book_or_create(res.isbn_13, res.title, authors)
+        book_options = dict(title=res.title,
+                            authors=authors, isbn_13=res.isbn_13)
+        update_data_if_unavailable(book, **book_options)
+        res.caudexer_book = book
+        res.save()
+        books.append(book)
+
+
+    print("Books: {}".format(len(books)))
+    # for b in books:
+    #       print(b.title, b.authors, b.isbn_13, b.gb != None, b.gr != None)
     return books
 
 

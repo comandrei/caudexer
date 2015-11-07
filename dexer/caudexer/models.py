@@ -11,6 +11,43 @@ class CaudexerBook(models.Model):
         unique_together = (("isbn_13", "title", "authors"),)
 
 
+class AmazonBook(models.Model):
+    caudexer_book = models.ForeignKey(CaudexerBook)
+    price_and_currency = models.CharField(max_length=100)
+    asin = models.Charfield(max_length=100)
+    sales_rank = models.IntegerField(null=True, blank=True)
+    offer_url = models.URLField(max_length=200)
+    authors = models.CharField(max_length=200)
+    publisher = models.CharField(max_length=200)
+    isbn_13 = models.CharField(null=True, blank=True, max_length=300)
+    eisbn = models.CharField(null=True, blank=True, max_length=300)
+    binding = models.CharField(null=True, blank=True, max_length=300)
+    languages = models.CharField(null=True, blank=True, max_length=300)
+    edition = models.CharField(null=True, blank=True, max_length=300)
+    title = models.CharField(null=True, blank=True, max_length=300)
+    publication_date = models.DateField()
+    pages = models.IntegerField(null=True, blank=True)
+
+    @classmethod
+    def from_product_api(cls, product):
+        return cls(
+            price_and_currency=u'{} {}', *product.price_and_currency,
+            asin=product.asin,
+            sales_rank=product.sales_rank,
+            offer_url=offer_url,
+            authors=', '.join(product.authors),
+            publisher=product.publisher,
+            isbn_13=('978' if len(product.isbn == 10) else '') + product,
+            eisbn=product.isbn,
+            binding=product.binding,
+            languages=', '.join(product.languages),
+            edition=product.edition,
+            title=product.title,
+            publication_date=product.publication_date,
+            pages=int(product.pages or 0),
+        )
+
+
 class GoogleBooksData(models.Model):
     caudexer_book = models.ForeignKey(CaudexerBook)
     timestamp = models.DateField(auto_now_add=True)
