@@ -1,4 +1,9 @@
 Django==1.8.6
 psycopg2==2.6.1
-rest_framework=3.3.1
+djangorestframework==3.3.1
 gunicorn==19.3.0
+requests==2.8.1
+python_dateutil==2.4.2
+lxml==3.4.4
+py==1.4.30
+python_amazon_simple_product_api==2.0.1

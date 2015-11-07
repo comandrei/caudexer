@@ -11,6 +11,49 @@ class CaudexerBook(models.Model):
         unique_together = (("isbn_13", "title", "authors"),)
 
 
+class AmazonBook(models.Model):
+    caudexer_book = models.ForeignKey(CaudexerBook)
+    price_and_currency = models.CharField(max_length=100)
+    asin = models.CharField(max_length=100)
+    sales_rank = models.IntegerField(null=True, blank=True)
+    offer_url = models.URLField(null=True, max_length=200, blank=True)
+    authors = models.CharField(null=True, max_length=200, blank=True)
+    publisher = models.CharField(null=True, max_length=200, blank=True)
+    isbn_13 = models.CharField(null=True, blank=True, max_length=300)
+    eisbn = models.CharField(null=True, blank=True, max_length=300)
+    binding = models.CharField(null=True, blank=True, max_length=300)
+    languages = models.CharField(null=True, blank=True, max_length=300)
+    edition = models.CharField(null=True, blank=True, max_length=300)
+    title = models.CharField(null=True, blank=True, max_length=300)
+    publication_date = models.DateField()
+    pages = models.IntegerField(null=True, blank=True)
+    large_image_url = models.URLField(null=True, max_length=200, blank=True)
+    medium_image_url = models.URLField(null=True, max_length=200, blank=True)
+    small_image_url = models.URLField(null=True, max_length=200, blank=True)
+
+    @classmethod
+    def from_product(cls, product):
+        return cls(
+            price_and_currency=u'{} {}'.format(*product.price_and_currency),
+            asin=product.asin,
+            sales_rank=product.sales_rank,
+            offer_url=product.offer_url,
+            authors=', '.join(product.authors),
+            publisher=product.publisher,
+            isbn_13=('978' if len(product.isbn or '') == 10 else '') + (product.isbn or ''),
+            eisbn=product.isbn,
+            binding=product.binding,
+            languages=', '.join(product.languages),
+            edition=product.edition,
+            title=product.title,
+            publication_date=product.publication_date,
+            pages=int(product.pages or 0),
+            large_image_url=product.large_image_url,
+            medium_image_url=product.medium_image_url,
+            small_image_url=product.small_image_url,
+        )
+
+
 class GoogleBooksData(models.Model):
     caudexer_book = models.ForeignKey(CaudexerBook)
     timestamp = models.DateField(auto_now_add=True)
