@@ -13,4 +13,5 @@ setuptools.setup(
     name='caudexer',
     version='0.1.0',
     install_requires=requirements(),
+    packages=['dexer/dexer', 'dexer/caudexer'],
 )

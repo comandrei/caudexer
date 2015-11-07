@@ -14,7 +14,7 @@ class CaudexerBook(models.Model):
 class AmazonBook(models.Model):
     caudexer_book = models.ForeignKey(CaudexerBook)
     price_and_currency = models.CharField(max_length=100)
-    asin = models.Charfield(max_length=100)
+    asin = models.CharField(max_length=100)
     sales_rank = models.IntegerField(null=True, blank=True)
     offer_url = models.URLField(max_length=200)
     authors = models.CharField(max_length=200)
