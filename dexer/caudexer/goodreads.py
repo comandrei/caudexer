@@ -37,7 +37,7 @@ def search(title):
 
 
 def _get_key():
-    return random.choice(GOODREADS_KEYS)
+    return random.choice(GOODREADS_KEYS)[0]
 
 def _debug_print(node, padding=""):
     print(padding, node.tag, node.text, node.attrib)
