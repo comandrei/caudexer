@@ -24,9 +24,13 @@ def configure():
     run("sudo service nginx restart")
 
 def deploy():
-    # run("rm -rf deployed")
-    # run("git clone {}".format(REPO_TO_CLONE))
-    run("virtualenv deployed --python=$(which python3)")
     run("cd caudexer; git pull")
-    run("deployed/bin/pip install -r dexer/requirements.txt")
+    run("deployed/bin/pip install -r caudexer/dexer/requirements.txt")
     run("sudo service gunicorn restart")
+
+def first_deploy():
+    run("rm -rf deployed")
+    run("rm -rf caudexer")
+    run("git clone {}".format(REPO_TO_CLONE))
+    run("virtualenv deployed --python=$(which python3)")
+    deploy()
