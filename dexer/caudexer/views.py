@@ -24,14 +24,33 @@ def search(request):
     if not title:
         return JSONResponse("Must provide title")
 
+    books = search_all(title)
     unsorted_books = []
-    for book in search_all(title):
-        gr_data = book.goodreadsdata_set.all().order_by('-timestamp')
-        gr = gr_data[0] if gr_data else None
-        gb_data = book.googlebooksdata_set.all().order_by('-timestamp')
-        gb = gb_data[0] if gb_data else None
-        unsorted_books.append([book, gr, gb])
+    for book, data in books.items():
+        gb, gr = data
+        unsorted_books.append([book, gb, gr])
 
     sorted_books_with_rank = algorithm(unsorted_books)
-    #must serialize them
-    return JSONResponse(len(sorted_books_with_rank))
+
+    data = []
+    for book, gb, gr in sorted_books_with_rank:
+        snippet = gb.snippet if gb else ""
+        img = (gb.img if gb else None) or (gr.img if gr else None)
+        lang = gb.language if gb else None
+        rank = 1
+        pub_year = (gr.pub_year if gr else None) or (gb.publish_year if gb else None)
+        result = {
+            "id": book.id,
+            "title": book.title,
+            "description": snippet,
+            "authors": book.authors.split(','),
+            "isbn": book.isbn_13,
+            "thumbnail": img,
+            "language": lang,
+            "ranking": rank,
+            "publish_year": pub_year,
+        }
+        data.append(result)
+    return JSONResponse(data)
+
+
