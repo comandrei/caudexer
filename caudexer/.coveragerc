@@ -1,3 +1,0 @@
-[run]
-include = caudexer/*
-omit = *migrations*, *tests*
