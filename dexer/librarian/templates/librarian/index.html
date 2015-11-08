@@ -7,9 +7,11 @@
         <title>caudexer</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+        <link href='https://fonts.googleapis.com/css?family=Roboto|Lato' rel='stylesheet' type='text/css'>
         <style type="text/css">
          body{
              text-align: center;
+             font-family: 'Roboto', sans-serif;
          }
          @-webkit-keyframes spin {
              0% {
@@ -62,11 +64,36 @@
              -ms-flex-align: center;
              align-items: center;
          }
+         .powered {
+             color: #ccc;
+             padding: 1em;
+         }
+         .powered img {
+             -webkit-filter: grayscale(100%);
+             filter: grayscale(100%);
+             padding-left: 1em;
+             height: 40px;
+         }
+         .powered img:hover{
+             -webkit-filter: grayscale(0%);
+             filter: grayscale(0%);
+         }
         </style>
     </head>
     <body>
         <div class="container">
             <h1>caudexer</h1>
+            <div class="pull-right powered">
+                powered by: <a href="http://amazon.com/">
+                <img src="http://www.turnerduckworth.com/media/filer_public/86/18/86187bcc-752a-46f4-94d8-0ce54b98cd46/td-amazon-smile-logo-01-large.jpg" "alt="amazon.com" />
+                </a>
+                <a href="http://books.google.com/">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Google_Book_Search_Beta_logo.png" alt="google books" />
+                </a>
+                <a href="http://goodreads.com/">
+                    <img src="http://4844w13o336ze0zhw1bllkwi.wpengine.netdna-cdn.com/wp-content/uploads/2011/09/goodreads.jpg" alt="goodreads" />
+                </a>
+            </div>
             <div class="form-group">
                 <form id="searchForm">
                     <input type="text" id="search" class="form-control" placeholder="Book topic" />
@@ -83,7 +110,7 @@
                     <h4>{{title}}</h4>
                     <div class="info">
                         <img src="{{ thumbnail }}" />
-                        <span> {{ description }} </span>
+                        <span> {{{ description }}} </span>
                     </div>
                     Rating: {{ ranking }}
                 </div>
