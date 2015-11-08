@@ -7,3 +7,4 @@ python_dateutil==2.4.2
 lxml==3.4.4
 py==1.4.30
 python_amazon_simple_product_api==2.0.1
+six==1.10.0
