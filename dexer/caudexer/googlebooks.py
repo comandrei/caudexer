@@ -36,7 +36,7 @@ def search(title):
         book_data["average_rating"] = info.get("averageRating", None)
         book_data["nr_reviews"] = info.get("ratingsCount", None)
         book_data["language"] = info.get("language", "")
-        book_data["title"] = info['title']
+        book_data["title"] = info.get('title', "")[:300]
         book_data["page_count"] = info.get("pageCount", None)
         book_data["publish_year"] = info.get("publishDate", None)
         book = GoogleBooksData.from_data(**book_data)

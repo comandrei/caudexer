@@ -140,7 +140,7 @@ def update_data_if_unavailable(book, title=None, isbn_13=None, authors=None, cat
     changed = False
     if title and not book.title:
         changed = True
-        book.title = title
+        book.title = title[:300]
     if isbn_13 and not book.isbn_13:
         changed = True
         book.isbn_13 = isbn_13

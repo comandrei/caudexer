@@ -56,7 +56,7 @@ def make_book(node):
     book_data["pub_day"] = _get_child_val(node, "original_publication_day")
     book_data["average_rating"] = _get_child_val(node, "average_rating")
     book_info = _get_child(node, "best_book")
-    book_data["title"] = _get_child_val(book_info, "title")
+    book_data["title"] = _get_child_val(book_info, "title", "")[:300]
     author_data = _get_child(book_info, "author")
     book_data["authors"] = _get_child_val(author_data, "name")
     book_data["author_id"] = _get_child_val(author_data, "id")

@@ -76,7 +76,7 @@ class AmazonBook(models.Model):
             binding=product.binding,
             languages=', '.join(product.languages),
             edition=product.edition,
-            title=product.title,
+            title=(product.title or "")[:300],
             publication_date=product.publication_date,
             pages=int(product.pages or 0),
             large_image_url=product.large_image_url,
