@@ -56,7 +56,7 @@ class AmazonBook(models.Model):
     languages = models.CharField(null=True, blank=True, max_length=300)
     edition = models.CharField(null=True, blank=True, max_length=300)
     title = models.CharField(null=True, blank=True, max_length=300)
-    publication_date = models.DateField()
+    publication_date = models.DateField(null=True)
     pages = models.IntegerField(null=True, blank=True)
     large_image_url = models.URLField(null=True, max_length=200, blank=True)
     medium_image_url = models.URLField(null=True, max_length=200, blank=True)
