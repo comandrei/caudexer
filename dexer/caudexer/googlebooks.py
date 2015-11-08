@@ -28,8 +28,8 @@ def search(title):
         book_data["authors"] = ', '.join(info.get('authors', []))
         book_data["categories"] = ', '.join(info.get('categories', []))
         book_data["description"] = info.get('description', None)
-        book_data["small_img"] = info['imageLinks']['smallThumbnail']
-        book_data["img"] = info['imageLinks']['thumbnail']
+        book_data["small_img"] = info.get('imageLinks', {}).get('smallThumbnail', None)
+        book_data["img"] = info.get('imageLinks', {}).get('thumbnail', None)
         book_data["isbn_13"] = get_isbn13(info.get('industryIdentifiers', None))
         book_data["average_rating"] = info.get("averageRating", None)
         book_data["nr_reviews"] = info.get("ratingsCount", None)
