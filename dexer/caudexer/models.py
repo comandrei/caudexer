@@ -64,7 +64,7 @@ class AmazonBook(models.Model):
 
     @classmethod
     def from_product(cls, product):
-        return cls(
+        options = dict(
             price_and_currency=u'{} {}'.format(*product.price_and_currency),
             asin=product.asin,
             sales_rank=product.sales_rank,
@@ -83,6 +83,10 @@ class AmazonBook(models.Model):
             medium_image_url=product.medium_image_url,
             small_image_url=product.small_image_url,
         )
+        results = cls.objects.all().filter(**options)
+        if results:
+            return results[0]
+        return cls(**options)
 
 
 class GoogleBooksData(models.Model):
