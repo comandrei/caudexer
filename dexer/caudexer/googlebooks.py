@@ -18,7 +18,9 @@ def search(title):
 
     results = response.json()
     # total_items = results['totalItems']
-    items = results['items']
+    items = results.get('items', [])
+    if not items:
+        return []
     books = []
     for item in items:
         book_data = {}
