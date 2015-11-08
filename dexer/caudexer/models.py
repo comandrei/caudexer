@@ -106,7 +106,7 @@ class AmazonBook(models.Model):
                 except:
                     average_rating = 0
                 try:
-                    nr_reviews = int(reviews.xpath(xpath['review_number'])[0].split('customer'))
+                    nr_reviews = int(reviews.xpath(xpath['review_number'])[0].split('customer')[0])
                 except:
                     nr_reviews = 0
                 options.setdefault('average_rating', average_rating)
