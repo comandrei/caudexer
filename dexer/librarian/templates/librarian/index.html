@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>caudexer</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+        <style type="text/css">
+         body{
+             text-align: center;
+         }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>caudexer</h1>
+            <div class="form-group">
+                <form id="searchForm">
+                    <input type="text" id="search" class="form-control" placeholder="Book topic" /></div>
+                </form>
+        </div>
+        <div class="results">
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.min.js"></script>
+        <script id="entry-template" type="text/x-handlebars-template">
+            {% verbatim %}
+            <div class="entries">
+                {{#each books}}
+                <div class="entry">
+                    <h1>{{title}}</h1>
+                    <div class="body">
+                        {{ description }}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {% endverbatim %}
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+        <script>
+         $("#searchForm").on('submit', function(e){
+             e.preventDefault();
+             var query = $("#search").val();
+             var apiEndpoint = '/api/search/?title=' + query;
+             $.ajax({
+                 url: apiEndpoint,
+                 success: function (data){
+                     console.log(data);
+                     var source   = $("#entry-template").html();
+                     var template = Handlebars.compile(source);
+                     var bookshtml = template({books: data});
+                     var query = $(".results").html(bookshtml);
+                 },
+                 error: function(data){
+                     alert('error');
+                 }
+             })
+         });
+        </script>
+    </body>
+</html>

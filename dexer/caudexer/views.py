@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import CaudexerBook
 from .search import search_all
-from .algorithm import algorithm
+from .algorithm import algorithm, _basic_ranking
 
 class JSONResponse(HttpResponse):
     """
@@ -64,16 +64,86 @@ def search(request):
 def detail(request):
     if request.method != 'GET':
         return JSONResponse("Should be GET.")
-    id = request.GET.get("id", "")
-    if not id:
+    book_id = request.GET.get("id", "")
+    if not book_id:
         return JSONResponse("Must provide 'id'")
 
-    book = get_object_or_404(CaudexerBook, id=id)
+    book = get_object_or_404(CaudexerBook, id=book_id)
+    data = _serialize_book_data(book)
+    return JSONResponse(data)
+
+
+@csrf_exempt
+def detail(request):
+    if request.method != 'GET':
+        return JSONResponse("Should be GET.")
+    book_ids = request.GET.get("ids", "")
+    if not book_ids:
+        return JSONResponse("Must provide 'ids' split by ','")
+    try:
+        ids = [int(id) for id in book_ids.split(',')]
+    except:
+        return JSONResponse("Invalid ids format.")
+
+    books = [get_object_or_404(CaudexerBook, id=book_id) for book_id in ids]
+    books_data = [_serialize_book_data(book) for book in books]
+
+    if not "side_by_side" in request.GET:
+        return JSONResponse(books_data)
+    else:
+        return JSONResponse(_side_to_side(books_data))
+
+
+def _side_to_side(books_data):
+    if not books_data:
+        return []
+    data = {}
+    for key in books_data[0]:
+        data[key] = [book.get(key, None) for book in books_data]
+    return data
+
+
+def _serialize_book_data(book):
     data = {
+        "id": book.id,
         "isbn_13": book.isbn_13,
         "title": book.title,
         "authors": (book.authors or '').split(','),
         "categories": (book.categories or '').split(','),
+        "ranking": _basic_ranking(book, book.gb_data, book.gr_data, book.amazon_data)
     }
 
-    return JSONResponse(data)
+    if book.gb_data:
+        gb = book.gb_data
+        gb_info = {
+            "date_retrieved": gb.timestamp,
+            "google_books_identifier": gb.google_book_id,
+            "snippet": gb.snippet,
+            "image_url": gb.img,
+            "isbn_13": gb.isbn_13,
+            "average_rating": gb.average_rating,
+            "nr_reviews": gb.nr_reviews,
+            "language": gb.language,
+            "page_count": gb.page_count,
+            "publish_year": gb.publish_year,
+            "categories": gb.categories,
+            "description": gb.description,
+        }
+        data["Google Books Info"] = gb_info
+
+    if book.gr_data:
+        gr = book.gr_data
+        gr_info = {
+            "date_retrieved": gr.timestamp,
+            "goodreads_identifier": gr.good_reads_id,
+            "average_rating": gr.average_rating,
+            "nr_reviews": gr.nr_reviews,
+            "nr_text_reviews": gr.nr_text_reviews,
+            "publish_year": gr.pub_year,
+            "publish_month": gr.pub_month,
+            "publish_day": gr.pub_day,
+            "image_url": gr.img,
+        }
+        data["GoodReads Info"] = gr_info
+
+    return data

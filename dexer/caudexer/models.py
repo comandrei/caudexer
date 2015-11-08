@@ -10,6 +10,37 @@ class CaudexerBook(models.Model):
     class Meta:
         unique_together = (("isbn_13", "title", "authors"),)
 
+    @property
+    def gb_data(self):
+        if not hasattr(self, "_gb_data"):
+            try:
+                self._gb_data = self.googlebooksdata_set.all().order_by("-timestamp")[0]
+            except IndexError:
+                self._gb_data = None
+
+        return self._gb_data
+
+    @property
+    def gr_data(self):
+        if not hasattr(self, "_gr_data"):
+            try:
+                self._gr_data = self.goodreadsdata_set.all().order_by("-timestamp")[0]
+            except IndexError:
+                self._gr_data = None
+
+        return self._gr_data
+
+    @property
+    def amazon_data(self):
+        if not hasattr(self, "_amazon_data"):
+            try:
+                # should have a way to determine most recent
+                self._amazon_data = self.amazonbook_set.all()[0]
+            except IndexError:
+                self._amazon_data = None
+
+        return self._amazon_data
+
 
 class AmazonBook(models.Model):
     caudexer_book = models.ForeignKey(CaudexerBook)
