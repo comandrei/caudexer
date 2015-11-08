@@ -1,3 +1,7 @@
+import requests
+import lxml.html
+
+
 from django.db import models
 
 
@@ -61,6 +65,8 @@ class AmazonBook(models.Model):
     large_image_url = models.URLField(null=True, max_length=200, blank=True)
     medium_image_url = models.URLField(null=True, max_length=200, blank=True)
     small_image_url = models.URLField(null=True, max_length=200, blank=True)
+    average_rating = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=10)
+    nr_reviews = models.IntegerField(null=True, blank=True)
 
     @classmethod
     def from_product(cls, product):
@@ -86,6 +92,27 @@ class AmazonBook(models.Model):
         results = cls.objects.all().filter(**options)
         if results:
             return results[0]
+        if product.reviews[0]:
+            reviews_response = requests.get(product.reviews[1])
+            if reviews_response.status_code == 200:
+                html = reviews_response.content
+                reviews = lxml.html.document_fromstring(html)
+                xpath = {
+                    'rating': '//span[@class="asinReviewsSummary"]/a/img/@title',
+                    'review_number': '//span[@class="crAvgStars"]//a/text()'
+                }
+                try:
+                    average_rating = float(reviews.xpath(xpath['rating'])[0].split('out')[0])
+                except:
+                    average_rating = 0
+                try:
+                    nr_reviews = int(reviews.xpath(xpath['review_number'])[0].split('customer'))
+                except:
+                    nr_reviews = 0
+                options.setdefault('average_rating', average_rating)
+                options.setdefault('nr_reviews', nr_reviews)
+        options.setdefault('average_rating', 0)
+        options.setdefault('nr_reviews', 0)
         return cls(**options)
 
 

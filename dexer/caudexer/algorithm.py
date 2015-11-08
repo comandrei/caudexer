@@ -23,6 +23,11 @@ def _basic_ranking(book, gb_data, gr_data, amz_data):
         nr_reviews += nr
         total_rating_value += (float(gr_data.average_rating) * nr)
 
+    if amz_data and amz_data.nr_reviews and amz_data.average_rating:
+        nr = float(amz_data.nr_reviews)
+        nr_reviews += nr
+        total_rating_value += (float(amz_data.average_rating) * nr)
+
     if total_rating_value == 0:
         return 0
     value = total_rating_value/nr_reviews
