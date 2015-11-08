@@ -109,7 +109,7 @@
              $.ajax({
                  url: apiEndpoint,
                  success: function (data){
-                     var bookshtml = template({books: data});
+                     var bookshtml = template({books: data['results']});
                      $resultsDiv.html(bookshtml);
                  },
                  error: function(data){
