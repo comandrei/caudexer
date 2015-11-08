@@ -26,7 +26,7 @@ def search(request):
     if not title:
         return JSONResponse("Must provide title")
 
-    books = search_all(title)
+    books, meta = search_all(title)
     unsorted_books = []
     for book, data in books.items():
         gb, gr, amz = data
@@ -60,7 +60,12 @@ def search(request):
             "publish_year": pub_year,
         }
         data.append(result)
-    return JSONResponse(data)
+
+    response = {
+        "results": data,
+    }
+    response.update(meta)
+    return JSONResponse(response)
 
 
 @csrf_exempt
