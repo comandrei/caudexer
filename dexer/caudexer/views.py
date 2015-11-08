@@ -41,10 +41,13 @@ def search(request):
                (gr.img if gr else None) or
                (amz.small_image_url if amz else None))
         lang = gb.language if gb else None
-        pub_year = ((gr.pub_year if gr else None) or
-                    (gb.publish_year if gb else None) or
-                    (amz.publication_date.year if amz else None))
 
+        if amz and amz.publication_date:
+            amz_pub_year = amz.publication_date.year 
+        else:
+            amz_pub_year = None
+        pub_year = ((gr.pub_year if gr else None) or
+                    (gb.publish_year if gb else None) or amz_pub_year)
         result = {
             "id": book.id,
             "title": book.title,

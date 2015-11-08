@@ -32,5 +32,5 @@ def test_amazon_adapter():
 
 @pytest.mark.django_db
 def test_search_view(client):
-    response = client.get('/api/search/?title=python')
+    response = client.get('/api/search/?title=coffe')
     
