@@ -2,20 +2,26 @@ from . import googlebooks as gb
 from . import goodreads as gr
 from . import amazon as amz
 from .models import CaudexerBook
+import time
 # from collections import namedtuple
 
 # CaudexerBook= namedtuple("CaudexerBook", ["title", "authors", "isbn_13", "gb", "gr"])
 DEBUG = False
 
 def search_all(title):
+    metadata = {}
+    time0 = time.time()
     print("Searching for {}".format(title).encode('utf-8'))
     gr_results = gr.search(title)
+    time1 = time.time()
     if DEBUG:
         print("Goodreads has {} results".format(len(gr_results)).encode('utf-8'))
     gb_results = gb.search(title)
+    time2 = time.time()
     if DEBUG:
         print("Google books has {} results".format(len(gb_results)).encode('utf-8'))
     amz_results = amz.search(title)
+    time3 = time.time()
     if DEBUG:
         print("Amazon books has {} results".format(len(amz_results)).encode('utf-8'))
 
@@ -59,12 +65,17 @@ def search_all(title):
         book_data[2] = res
         if DEBUG:
             print(book, book.title.encode('utf-8'))
+    time4 = time.time()
 
+    metadata["goodreads_time"] = time1-time0
+    metadata["google_books_time"] = time2-time1
+    metadata["amazon_time"] = time3-time2
+    metadata["agregation_time"] = time4-time3
 
     print("Books: {}".format(len(books)))
     # for b in books:
     #       print(b.title, b.authors, b.isbn_13, b.gb != None, b.gr != None)
-    return books
+    return books, metadata
 
 
 def book_matches(result, title=None, authors=None, isbn_13=None):
