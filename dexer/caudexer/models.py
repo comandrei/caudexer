@@ -69,7 +69,7 @@ class AmazonBook(models.Model):
             asin=product.asin,
             sales_rank=product.sales_rank,
             offer_url=product.offer_url,
-            authors=', '.join(product.authors),
+            authors=(', '.join(product.authors) or "")[:200],
             publisher=product.publisher,
             isbn_13=('978' if len(product.isbn or '') == 10 else '') + (product.isbn or ''),
             eisbn=product.isbn,
