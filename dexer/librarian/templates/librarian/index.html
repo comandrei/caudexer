@@ -46,7 +46,7 @@
          $("#searchForm").on('submit', function(e){
              e.preventDefault();
              var query = $("#search").val();
-             var apiEndpoint = 'http://demo7113935.mockable.io'+'/api/search/?q=' + query;
+             var apiEndpoint = '/api/search/?title=' + query;
              $.ajax({
                  url: apiEndpoint,
                  success: function (data){
