@@ -39,7 +39,7 @@ def search(request):
         snippet = gb.snippet if gb else ""
         img = ((gb.img if gb else None) or
                (gr.img if gr else None) or
-               (amz.small_image_url if amz else None))
+               (amz.large_image_url if amz else None))
         lang = gb.language if gb else None
 
         if amz and amz.publication_date:

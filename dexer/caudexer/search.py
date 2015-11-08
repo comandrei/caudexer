@@ -116,14 +116,14 @@ def find_book_or_create(results, title=None, isbn_13=None, authors=None, categor
 
     if isbn_13:
         try:
-            book = CaudexerBook.objects.get(isbn_13=isbn_13)
-        except CaudexerBook.DoesNotExist:
+            book = CaudexerBook.objects.all().filter(isbn_13=isbn_13)[0]
+        except:
             book = None
 
     if not book:
         try:
-            book = CaudexerBook.objects.get(title=title, authors=authors)
-        except CaudexerBook.DoesNotExist:
+            book = CaudexerBook.objects.all().filter(title=title, authors=authors)[0]
+        except:
             book = None
 
     if not book:
