@@ -58,7 +58,7 @@ def search_all(title):
         book_options = dict(title=res.title,
                             authors=res.authors, isbn_13=res.isbn_13)
         if res.id:
-            book = res.book
+            book = res.caudexer_book
         else:
             book = find_book_or_create(books, **book_options)
             res.caudexer_book = book
