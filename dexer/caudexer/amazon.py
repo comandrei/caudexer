@@ -17,9 +17,12 @@ def search(keywords):
     """
     :returns: *AmazonBook* models that match keywords
     """
-    return [models.AmazonBook.from_product(result)
-            for result in search_books(Keywords=keywords)]
-
+    try:
+        results = [models.AmazonBook.from_product(result)
+                   for result in search_books(Keywords=keywords)]
+    except Exception:
+        results = []
+    return results
 
 def search_books(get_credentials=file_credentials, **options):
     """
