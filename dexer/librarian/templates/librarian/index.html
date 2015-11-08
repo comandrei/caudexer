@@ -11,6 +11,57 @@
          body{
              text-align: center;
          }
+         @-webkit-keyframes spin {
+             0% {
+                 -webkit-transform: rotate(0deg);
+                 transform: rotate(0deg);
+             }
+             100% {
+                 -webkit-transform: rotate(359deg);
+                 transform: rotate(359deg);
+             }
+         }
+         @keyframes spin {
+             0% {
+                 -webkit-transform: rotate(0deg);
+                 transform: rotate(0deg);
+             }
+             100% {
+                 -webkit-transform: rotate(359deg);
+                 transform: rotate(359deg);
+             }
+         }
+         .glyphicon-spin {
+             -webkit-animation: spin 1000ms infinite linear;
+             animation: spin 1000ms infinite linear;
+         }
+         .loading{
+             position: absolute;
+             top: 50%;
+             left: 45%;
+         }
+         .entries{
+             text-align: left;
+         }
+         .entry {
+             padding: 1em;
+             border: 2px solid #ccc;
+             margin-bottom: 1em;
+             border-radius: 1em;
+         }
+
+         div.info{
+             display: -webkit-box;
+             display: -moz-box;
+             display: -ms-flexbox;
+             display: -webkit-flex;
+             display: flex;
+             -webkit-box-align: center;
+             -moz-box-align: center;
+             -webkit-align-items: center;
+             -ms-flex-align: center;
+             align-items: center;
+         }
         </style>
     </head>
     <body>
@@ -18,10 +69,10 @@
             <h1>caudexer</h1>
             <div class="form-group">
                 <form id="searchForm">
-                    <input type="text" id="search" class="form-control" placeholder="Book topic" /></div>
+                    <input type="text" id="search" class="form-control" placeholder="Book topic" />
                 </form>
-        </div>
-        <div class="results">
+            </div>
+            <div id="results"></div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.min.js"></script>
         <script id="entry-template" type="text/x-handlebars-template">
@@ -29,10 +80,12 @@
             <div class="entries">
                 {{#each books}}
                 <div class="entry">
-                    <h1>{{title}}</h1>
-                    <div class="body">
-                        {{ description }}
+                    <h4>{{title}}</h4>
+                    <div class="info">
+                        <img src="{{ thumbnail }}" />
+                        <span> {{ description }} </span>
                     </div>
+                    Rating: {{ ranking }}
                 </div>
                 {{/each}}
             </div>
@@ -43,21 +96,24 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 
         <script>
+
          $("#searchForm").on('submit', function(e){
              e.preventDefault();
-             var query = $("#search").val();
-             var apiEndpoint = '/api/search/?title=' + query;
+             var query = $("#search").val(),
+                 apiEndpoint = '/api/search/?title=' + query,
+                 $resultsDiv = $("#results"),
+                 source = $("#entry-template").html(),
+                 template = Handlebars.compile(source);
+             $resultsDiv.html('<div class="loading"> Fetching results <br /><span class="glyphicon glyphicon-refresh glyphicon-spin"></span></div>');
+
              $.ajax({
                  url: apiEndpoint,
                  success: function (data){
-                     console.log(data);
-                     var source   = $("#entry-template").html();
-                     var template = Handlebars.compile(source);
                      var bookshtml = template({books: data});
-                     var query = $(".results").html(bookshtml);
+                     $resultsDiv.html(bookshtml);
                  },
                  error: function(data){
-                     alert('error');
+                     $resultsDiv.html("<div class='loading'>Something went wrong</div>");
                  }
              })
          });
