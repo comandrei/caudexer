@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^', include('caudexer.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('librarian.urls'))
 ]
