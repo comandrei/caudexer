@@ -74,7 +74,7 @@ def detail(request):
 
 
 @csrf_exempt
-def detail(request):
+def compare(request):
     if request.method != 'GET':
         return JSONResponse("Should be GET.")
     book_ids = request.GET.get("ids", "")
