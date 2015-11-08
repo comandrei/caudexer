@@ -6,12 +6,7 @@ env.hosts = ['caudexer.com']
 REPO_TO_CLONE = "https://github.com/comandrei/caudexer/"
 
 def provision():
-    deps = []
-    with open("caudexer/requirements.apt") as req_file:
-        for line in req_file:
-            if line.startswith("#") or line.startswith(" "):
-                continue
-            deps.append(line.strip())
+    deps = ["nginx", "postgresql", "libxml2", "libxslt-dev", "python-dev"]
     run("sudo apt-get update")
     run("sudo apt-get install {} --assume-yes".format(" ".join(deps)))
     run("sudo pip install -U pip")
