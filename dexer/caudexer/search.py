@@ -5,15 +5,19 @@ from .models import CaudexerBook
 # from collections import namedtuple
 
 # CaudexerBook= namedtuple("CaudexerBook", ["title", "authors", "isbn_13", "gb", "gr"])
+DEBUG = False
 
 def search_all(title):
-    print("Searching for {}".format(title))
+    print("Searching for {}".format(title).encode('utf-8'))
     gr_results = gr.search(title)
-    print("Goodreads has {} results".format(len(gr_results)))
+    if DEBUG:
+        print("Goodreads has {} results".format(len(gr_results)).encode('utf-8'))
     gb_results = gb.search(title)
-    print("Google books has {} results".format(len(gb_results)))
+    if DEBUG:
+        print("Google books has {} results".format(len(gb_results)).encode('utf-8'))
     amz_results = amz.search(title)
-    print("Amazon books has {} results".format(len(amz_results)))
+    if DEBUG:
+        print("Amazon books has {} results".format(len(amz_results)).encode('utf-8'))
 
     books = {}
 
@@ -28,7 +32,8 @@ def search_all(title):
             res.caudexer_book = book
             res.save()
         books[book] = [res, None, None]
-        print(book, book.title)
+        if DEBUG:
+            print(book, book.title.encode('utf-8'))
 
     for res in gr_results:
         # gr no isbn :(
@@ -40,7 +45,8 @@ def search_all(title):
             res.save()
         book_data = books.setdefault(book, [None, None, None])
         book_data[1] = res
-        print(book, book.title)
+        if DEBUG:
+            print(book, book.title.encode('utf-8'))
 
     for res in amz_results:
         authors = serialize_authors(res.authors)
@@ -51,7 +57,8 @@ def search_all(title):
         res.save()
         book_data = books.setdefault(book, [None, None, None])
         book_data[2] = res
-        print(book, book.title)
+        if DEBUG:
+            print(book, book.title.encode('utf-8'))
 
 
     print("Books: {}".format(len(books)))
