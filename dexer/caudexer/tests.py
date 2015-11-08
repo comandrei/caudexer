@@ -34,3 +34,6 @@ def test_amazon_adapter():
 def test_search_view(client):
     response = client.get('/api/search/?title=coffe')
     
+@pytest.mark.django_db
+def test_nomatch_search_view(client):
+    response = client.get('/api/search/?title=rebreanu')
