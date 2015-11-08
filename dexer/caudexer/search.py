@@ -55,12 +55,14 @@ def search_all(title):
             print(book, book.title.encode('utf-8'))
 
     for res in amz_results:
-        authors = serialize_authors(res.authors)
         book_options = dict(title=res.title,
-                            authors=authors, isbn_13=res.isbn_13)
-        book = find_book_or_create(books, **book_options)
-        res.caudexer_book = book
-        res.save()
+                            authors=res.authors, isbn_13=res.isbn_13)
+        if res.id:
+            book = res.book
+        else:
+            book = find_book_or_create(books, **book_options)
+            res.caudexer_book = book
+            res.save()
         book_data = books.setdefault(book, [None, None, None])
         book_data[2] = res
         if DEBUG:
