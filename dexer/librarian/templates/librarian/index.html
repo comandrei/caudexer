@@ -83,7 +83,7 @@
     <body>
         <div class="container">
             <h1>caudexer</h1>
-            <div class="pull-right powered">
+            <div class="powered">
                 powered by: <a href="http://amazon.com/">
                 <img src="http://www.turnerduckworth.com/media/filer_public/86/18/86187bcc-752a-46f4-94d8-0ce54b98cd46/td-amazon-smile-logo-01-large.jpg" "alt="amazon.com" />
                 </a>
@@ -112,7 +112,8 @@
                             <a href="/api/detail?id={{ id }}"><img src="{{ thumbnail }}" /></a>
                         <span> {{{ description }}} </span>
                     </div>
-                    Rating: {{ ranking }}
+                    Rating: {{ ranking }} <br>
+		    Authors: {{ authors }}
                 </div>
                 {{/each}}
             </div>
